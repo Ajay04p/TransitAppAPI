@@ -7,7 +7,9 @@ functions = init.functions;
 app = init.app;
 app.get("/",(r,re) =>{
   re.send("Welcome to Transit API");
+  init.firebase.initializeApp();
 });
+
 const api = functions.https.onRequest(init.app);
 module.exports={
 api
