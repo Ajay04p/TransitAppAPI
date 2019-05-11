@@ -36,7 +36,7 @@ app.get("/getTripDetails/:interim/:route",(req, res) => {
    //TODO: date range
    //last week
    if(stats_type){
-     if(stats_type == 'lw'){
+     if(stats_type === 'lw'){
        res.send(new Date());
        return;
      }
@@ -60,13 +60,16 @@ app.get("/getTripDetails/:interim/:route",(req, res) => {
       // res.send("hello");
       //
       // })
-      return res.send("hellow")
+      //return res.send("hellow")
       response ={
         total_student: total_student,
         total_racks:total_racks
       };
       return res.send(response);
      }
+   }).catch(err =>{
+     console.log(err)
+     return res.send(err);
    });
   // myRef = db.collection(collectionPath).doc("taAO3zwDgrM6dojoknpt").get().then(doc => {
   // if (!doc.exists) {
@@ -78,4 +81,4 @@ app.get("/getTripDetails/:interim/:route",(req, res) => {
   // }).catch(err =>{
   //   console.log(err);
   // });
-  });
+});

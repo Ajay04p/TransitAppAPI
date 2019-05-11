@@ -15,7 +15,7 @@ app.get("/issues",(req, res) => {
   .then(snapshot => {
     if (snapshot.empty) {
       console.log('No matching documents.');
-      return res.send('No such document!');;
+      return res.send('No such document!');
     }
 
     snapshot.forEach(doc => {
@@ -23,7 +23,7 @@ app.get("/issues",(req, res) => {
       let dict = Object.assign(doc.data()['checks']['Engine_Checks'], doc.data()['checks']['Exterior_Checks'], doc.data()['checks']['Interior_Checks']);
       let answers = Object.values(dict);
       answers.forEach(value=>{
-      		if(value==false){
+      		if(!value){
       			issues++;
       		}
       });
@@ -33,7 +33,7 @@ app.get("/issues",(req, res) => {
   	var query = postInspectionDocs.where("Timestamp", ">", start).get()
   	.then(snapshot => {
     if (snapshot.empty) {
-      return res.send('No such document!');;
+      return res.send('No such document!');
     }
 
     snapshot.forEach(doc => {
@@ -41,23 +41,25 @@ app.get("/issues",(req, res) => {
       let dict = Object.assign(doc.data()['checks']['FuelAndOtherProblems'], doc.data()['checks']['PostTripChecks']);
       let answers = Object.values(dict);
       answers.forEach(value=>{
-      		if(value==false){
+      		if(!value){
       			issues++;
       		}
       });
     });
     console.log(issues);
     issues = String(issues);
-    res.send(issues);
+    return res.send(issues);
+  })
+  .catch(err => {
+    console.log('Error getting documents', err);
+    return res.send(err);
+  });
+
+    console.log(issues);
+    return res.send(issues)
   })
   .catch(err => {
     console.log('Error getting documents', err);
   });
 
-    console.log(issues);
-  })
-  .catch(err => {
-    console.log('Error getting documents', err);
-  });
-    
 });

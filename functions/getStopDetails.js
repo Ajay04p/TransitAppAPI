@@ -22,7 +22,7 @@ app.get("/getStops/:interim/:route",(req, res) => {
       db.collection("Stops").where("routes", "array-contains", route)
       .get().then(querySnapshot =>{
         if(querySnapshot.empty){
-          res.send("No Stops Found");
+          return res.send("No Stops Found");
         }else{
           querySnapshot.forEach(doc =>{
             //console.log(doc.data());
@@ -33,10 +33,17 @@ app.get("/getStops/:interim/:route",(req, res) => {
             }
           });
 
-          res.send(routeMap);
+          return res.send(routeMap);
         }
+      }).catch(err => {
+        console.log(err)
+        return res.send(err);
       });
     }
+
+    //just to remove the // WARNING:
+    return
+
   }).catch(err =>{
     console.log(err);
   });
@@ -71,9 +78,12 @@ app.get("/getAllRoutes/:interim",(req,res)=>{
       });
       return res.send(allRoutes);
     }
-    //return res.send(allRoutes);
+    return res.send("Something went wrong");
 
-  })
+  }).catch(err =>{
+    console.log(err);
+    res.send(err);
+  });
 
 });
 
@@ -100,15 +110,19 @@ app.get("/getSchedule/:interim/:route",(req, res)=> {
   myRef.get().then(querySnapshot =>{
     if(querySnapshot.empty){
       console.log("empty");
-      res.send("No data found");
+      return res.send("No data found");
     }else{
       querySnapshot.forEach(doc =>{
         data = doc.data();
         data['time'] = convertStringToTime(data['time']);
         possibleSchedule.push(data);
       });
-      res.send(possibleSchedule)
+      return res.send(possibleSchedule)
     }
+  }).catch(err=>{
+    console.log(err);
+    return res.send(err);
+
   });
 });
 
@@ -117,9 +131,9 @@ function convertToWeekType(week_day){
   week_day = week_days[week_day]
   if(week_day <= 4){
     return 'Weekday';
-  }else if(week_day == 5){
+  }else if(week_day === 5){
     return 'Saturday';
-  }else if(week_day == 6){
+  }else if(week_day === 6){
     return 'Sunday';
   }else{
     //TODO throw error

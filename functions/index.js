@@ -7,6 +7,15 @@ const getIssuesCount = require('./getMonthlyIssues.js')
 functions = init.functions;
 app = init.app;
 app.get("/",(r,re) =>{
+  list_api = {
+    getStops: "/getStops/:interim/:route",
+    getAllRoutes:"/getAllRoutes/:interim",
+    getSchedule:"/getSchedule/:interim/:route",
+    getTripDetails:"/getTripDetails/:interim/:route" ,
+    getInspectionCheckList: "/GetInspectionCheckList",
+    getPreInspectionRecords:"/getPreInspectionRecords"
+
+  }
   re.send("Welcome to Transit API");
   init.firebase.initializeApp();
 });
