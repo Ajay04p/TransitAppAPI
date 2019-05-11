@@ -82,22 +82,72 @@ app.get("/getSchedule/:interim/:route",(req, res)=> {
   route = req.params.route;
   let collectionPath = "Interim/"+interim+"/Routes/"+route+"/Schedule/";
   console.log("getSchedule called with " +interim +" and route" + route);
-  currentTime = req.params.
+  currentTime = req.query.current_time;
+  weekDay = req.query.week_day;
 
   myRef = db.collection(collectionPath);
-
-
+  if(currentTime){
+    range = getRange(currentTime);
+    myRef = myRef.where("time","<=",range[1]).where("time",">=",range[0]);
+    console.log(range);
+  }
+  if(weekDay){
+    weekDay = convertToWeekType(weekDay)
+    myRef = myRef.where("week_type", "==",weekDay);
+    console.log(weekDay);
+  }
+  possibleSchedule = []
   myRef.get().then(querySnapshot =>{
     if(querySnapshot.empty){
       console.log("empty");
+      res.send("No data found");
     }else{
       querySnapshot.forEach(doc =>{
-
+        data = doc.data();
+        data['time'] = convertStringToTime(data['time']);
+        possibleSchedule.push(data);
       });
+      res.send(possibleSchedule)
     }
   });
-  res.send("Regards, \n Ajay Pal")
 });
+
+function convertToWeekType(week_day){
+  week_days = {'Monday':0,'Tuesday':1,'Wednesday':2,'Thursday':3,'Friday':4,'Saturday':5,'Sunday':6}
+  week_day = week_days[week_day]
+  if(week_day <= 4){
+    return 'Weekday';
+  }else if(week_day == 5){
+    return 'Saturday';
+  }else if(week_day == 6){
+    return 'Sunday';
+  }else{
+    //TODO throw error
+    return 'Error';
+  }
+}
+
+const getRange = (time=>{
+  let cover = 200
+  time = Number(time.replace(":",""))
+  time1= time-cover
+  if(time1 < 0){
+    time1 = 0
+  }
+
+  time2 = time+cover
+  if(time2 > 2359){
+    time2=2359
+  }
+  return [Number(time1),Number(time2)];
+});
+
+const convertStringToTime = (time => {
+  time = time.toString();
+  return time.substr(0,time.length - 2)+":"+ time.substr(-2);
+});
+
+
 app.get("/testing",(req,res)=>{
   response = {
     field1: 50,
