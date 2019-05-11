@@ -16,7 +16,7 @@ app.get("/",(r,re) =>{
     getPreInspectionRecords:"/getPreInspectionRecords"
 
   }
-  re.send("Welcome to Transit API");
+  re.send(list_api);
   init.firebase.initializeApp();
 });
 
