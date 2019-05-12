@@ -14,7 +14,7 @@ app.get("/getweeklystudents/:route",(req, res) => {
 	.where("time", ">", start).get().then(tripdocs => {
     if (tripdocs.empty) {
       console.log('No matching documents.');
-      res.send("No trip docs found");
+      return res.send("No trip docs found");
     }
     else{
     	tripdocs.forEach(trip=>{
@@ -25,7 +25,7 @@ app.get("/getweeklystudents/:route",(req, res) => {
 			studentsList: students,
 			datelist: date
 		}
-		res.send(response);
+		return res.send(response);
     }
     }).catch(err=>{
 		console.log('Error getting documents', err);

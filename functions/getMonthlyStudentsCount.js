@@ -13,7 +13,7 @@ app.get("/monthlystudents",(req, res) => {
 	.then(snapshot => {
     if (snapshot.empty) {
       console.log('No matching documents.');
-      res.send('No Routes found');
+      return res.send('No Routes found');
     }
     else{
     	routeSize = snapshot.size;
@@ -24,7 +24,7 @@ app.get("/monthlystudents",(req, res) => {
 	    	.where("time", ">", start).get().then(tripdocs=>{
 	    		if(tripdocs.empty){
 	    			console.log('No matching documents.');
-	    			res.send("No docs found");
+	    			return res.send("No docs found");
 	    		}
 	    		else{
 	    			// var len = Array.from(tripdocs).length;
@@ -42,9 +42,9 @@ app.get("/monthlystudents",(req, res) => {
 		    				checkcallbacks.push(true);
 		    			}
 		    		});
-		    		
+
 		  			console.log(students, bikeracks, checkcallbacks.length);
-		  			if(checkcallbacks.length==routeSize){
+		  			if(checkcallbacks.length===routeSize){
 		    				response = {
 			    			totalstudents: students,
 			    			totalracks: bikeracks,
@@ -60,7 +60,7 @@ app.get("/monthlystudents",(req, res) => {
 	    		return;
 	    	});
 	    });
-	    
+			return ;
    }
   })
   .catch(err => {

@@ -19,7 +19,7 @@ app.get("/",(r,re) =>{
     getPreInspectionRecords:"/getPreInspectionRecords",
     getPreInspectionIssues:"/preInspectionIssues",
     getPostInspectionIssues:"/getPostInspectionIssues",
-    getWeeklyStudentsPerRoute: "/getweeklystudents/:route"
+    getWeeklyStudentsPerRoute: "/getweeklystudents/:route",
     getMonthlyStudentsCount:"/monthlystudents"
 
   }
