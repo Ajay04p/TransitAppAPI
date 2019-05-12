@@ -6,6 +6,7 @@ const getBusDetails = require('./getStopDetails.js')
 const getIssuesCount = require('./getMonthlyIssues.js')
 const getMonthlyStudents = require('./getMonthlyStudentsCount.js')
 const getWeeklyStudents = require('./getWeeklyStudentsPerRoute.js')
+const getTableData = require('./getTableData.js')
 
 functions = init.functions;
 app = init.app;
@@ -20,7 +21,8 @@ app.get("/",(r,re) =>{
     getPreInspectionIssues:"/preInspectionIssues",
     getPostInspectionIssues:"/getPostInspectionIssues",
     getWeeklyStudentsPerRoute: "/getweeklystudents/:route",
-    getMonthlyStudentsCount:"/monthlystudents"
+    getMonthlyStudentsCount:"/monthlystudents",
+    getTableData:"/getTableDetails/:route/:date/:schedule"
 
   }
   re.send(list_api);

@@ -21,21 +21,20 @@ app.get("/monthlystudents",(req, res) => {
 	    snapshot.forEach(route => {
 	    	console.log(route.id);
 	    	db.collection('Interim').doc('Spring2019').collection('Routes').doc(route.id).collection('TripDetails')
-	    	.where("time", ">", start).get().then(tripdocs=>{
+	    	.where("trip_start_time", ">", start).get().then(tripdocs=>{
 	    		if(tripdocs.empty){
 	    			console.log('No matching documents.');
+	    			// console.log(tripdocs);
 	    			return res.send("No docs found");
 	    		}
 	    		else{
-	    			// var len = Array.from(tripdocs).length;
-	    			// console.log(Array.from(tripdocs));
-	    			console.log(tripdocs);
+	    			// console.log(tripdocs);
 	    			let len = tripdocs.size;
 	    			console.log("length=", len);
 	    			temp = 0;
 		    		tripdocs.forEach(trip=>{
 		    			temp++;
-		    			console.log(route.id, trip.id, len);
+		    			// console.log(route.id, trip.id, len);
 		    			students = students + trip.data()['students_arrived'];
 		    			bikeracks = bikeracks + trip.data()['racks_loaded'];
 		    			if(temp===len){
@@ -43,7 +42,7 @@ app.get("/monthlystudents",(req, res) => {
 		    			}
 		    		});
 
-		  			console.log(students, bikeracks, checkcallbacks.length);
+		  			console.log(students, bikeracks, checkcallbacks.length, routeSize);
 		  			if(checkcallbacks.length===routeSize){
 		    				response = {
 			    			totalstudents: students,

@@ -11,7 +11,7 @@ app.get("/getweeklystudents/:route",(req, res) => {
 
 
  	let docs = db.collection('Interim').doc('Spring2019').collection('Routes').doc(route).collection('TripDetails')
-	.where("time", ">", start).get().then(tripdocs => {
+	.where("trip_start_time", ">", start).get().then(tripdocs => {
     if (tripdocs.empty) {
       console.log('No matching documents.');
       return res.send("No trip docs found");
@@ -19,7 +19,7 @@ app.get("/getweeklystudents/:route",(req, res) => {
     else{
     	tripdocs.forEach(trip=>{
 		    students.push(trip.data()['students_arrived']);
-		    date.push((trip.data()['time']).toDate());
+		    date.push((trip.data()['trip_start_time']).toDate());
 		});
 		response = {
 			studentsList: students,
