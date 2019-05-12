@@ -14,26 +14,48 @@ app.get("/getStops/:interim/:route",(req, res) => {
       return res.send('No such document!')
     } else {
       routeMap = {}
-      index = 0;
+      index = -1;
+      total_stops = 0
       routeIds = doc.data()['stops'].forEach(id=>{
-          routeMap[id]=index++;
+          index+=1
+          total_stops+=1
+          if(id in routeMap){
+            routeMap[id]= routeMap[id] +","+index;
+          }else{
+            routeMap[id]=""+index;
+          }
       });
-
       db.collection("Stops").where("routes", "array-contains", route)
       .get().then(querySnapshot =>{
         if(querySnapshot.empty){
-          return res.send("No Stops Found");
+          return res.send(emptyResponse);
         }else{
           querySnapshot.forEach(doc =>{
-            //console.log(doc.data());
             if(doc.id in routeMap){
               index = routeMap[doc.id];
               routeMap[doc.id] = doc.data();
               routeMap[doc.id].index = index;
             }
           });
+        stopList = new Array(total_stops);
 
-          return res.send(routeMap);
+        for (var i in routeMap){
+            data = routeMap[i]
+            index = data.index.split(",");
+            index.forEach(rank =>{
+              dataTemp = {
+                //routes: data.routes,
+                latlng:data.latlng,
+                stop_name: data.stop_name,
+                order:rank
+              }
+              stopList[rank] = dataTemp;
+            });
+        }
+        response = {
+            stops:stopList
+          }
+          return res.send(response);
         }
       }).catch(err => {
         console.log(err)
@@ -68,7 +90,6 @@ app.get("/getAllRoutes/:interim",(req,res)=>{
     }else{
       querySnapshot.forEach(doc =>{
         doc.data().routes.forEach(route =>{
-          console.log(route)
           if(route in allRoutes){
             allRoutes[route]++;
           }else{
@@ -76,6 +97,7 @@ app.get("/getAllRoutes/:interim",(req,res)=>{
           }
         })
       });
+
       return res.send(allRoutes);
     }
     return res.send("Something went wrong");
@@ -88,6 +110,10 @@ app.get("/getAllRoutes/:interim",(req,res)=>{
 });
 
 app.get("/getSchedule/:interim/:route",(req, res)=> {
+  emptySchedule ={
+    time:'empty',
+    week_type:'empty'
+  };
   interim = req.params.interim;
   route = req.params.route;
   let collectionPath = "Interim/"+interim+"/Routes/"+route+"/Schedule/";
@@ -110,15 +136,20 @@ app.get("/getSchedule/:interim/:route",(req, res)=> {
   myRef.get().then(querySnapshot =>{
     if(querySnapshot.empty){
       console.log("empty");
-      return res.send("No data found");
+      possibleSchedule.push(emptySchedule)
+      //return res.send(possibleSchedule);
     }else{
       querySnapshot.forEach(doc =>{
         data = doc.data();
         data['time'] = convertStringToTime(data['time']);
         possibleSchedule.push(data);
       });
-      return res.send(possibleSchedule)
+
     }
+    response = {
+      schedule: possibleSchedule
+    }
+    return res.send(response);
   }).catch(err=>{
     console.log(err);
     return res.send(err);
@@ -161,7 +192,9 @@ const convertStringToTime = (time => {
   return time.substr(0,time.length - 2)+":"+ time.substr(-2);
 });
 
-
+const removeUnderScore = (string=>{
+  return string.replace("_"," ");
+})
 app.get("/testing",(req,res)=>{
   response = {
     field1: 50,
