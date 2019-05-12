@@ -127,8 +127,8 @@ app.get("/getSchedule/:interim/:route",(req, res)=> {
 });
 
 function convertToWeekType(week_day){
-  week_days = {'Monday':0,'Tuesday':1,'Wednesday':2,'Thursday':3,'Friday':4,'Saturday':5,'Sunday':6}
-  week_day = week_days[week_day]
+  //week_days = {'monday':0,'tuesday':1,'wednesday':2,'thursday':3,'friday':4,'saturday':5,'sunday':6}
+  //week_day = week_days[week_day]
   if(week_day <= 4){
     return 'Weekday';
   }else if(week_day === 5){
