@@ -2,10 +2,10 @@ const init = require('./init.js')
 var db = init.admin.firestore();
 var app = init.app;
 
-app.get("/issues",(req, res) => {
+app.get("/preInspectionIssues",(req, res) => {
 
   let start = new Date();
-  start.setMonth(start.getMonth() - 3);
+  start.setMonth(start.getMonth() - 1);
   console.log(start);
   let issues = 0;
 
@@ -28,10 +28,27 @@ app.get("/issues",(req, res) => {
       		}
       });
     });
+    console.log(issues);
+    issues = String(issues);
+    return res.send(issues)
+  })
+  .catch(err => {
+    console.log('Error getting documents', err);
+  });
 
+});
+
+
+app.get("/postInspectionIssues",(req, res) => {
+
+
+  let start = new Date();
+  start.setMonth(start.getMonth() - 1);
+  console.log(start);
+  let issues = 0;
     let postInspectionDocs = db.collection('Post Inspection Check');
-  	var query = postInspectionDocs.where("Timestamp", ">", start).get()
-  	.then(snapshot => {
+    var query = postInspectionDocs.where("Timestamp", ">", start).get()
+    .then(snapshot => {
     if (snapshot.empty) {
       return res.send('No such document!');
     }
@@ -41,9 +58,9 @@ app.get("/issues",(req, res) => {
       let dict = Object.assign(doc.data()['checks']['FuelAndOtherProblems'], doc.data()['checks']['PostTripChecks']);
       let answers = Object.values(dict);
       answers.forEach(value=>{
-      		if(!value){
-      			issues++;
-      		}
+          if(!value){
+            issues++;
+          }
       });
     });
     console.log(issues);
@@ -53,13 +70,6 @@ app.get("/issues",(req, res) => {
   .catch(err => {
     console.log('Error getting documents', err);
     return res.send(err);
-  });
-
-    console.log(issues);
-    return res.send(issues)
-  })
-  .catch(err => {
-    console.log('Error getting documents', err);
   });
 
 });
