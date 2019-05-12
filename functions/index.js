@@ -4,6 +4,9 @@ const inpsectionRecords = require('./InspectionCheckRecord.js')
 const tripDetails = require('./getTripDetails.js')
 const getBusDetails = require('./getStopDetails.js')
 const getIssuesCount = require('./getMonthlyIssues.js')
+const getMonthlyStudents = require('./getMonthlyStudentsCount.js')
+const getWeeklyStudents = require('./getWeeklyStudentsPerRoute.js')
+
 functions = init.functions;
 app = init.app;
 app.get("/",(r,re) =>{
@@ -13,7 +16,11 @@ app.get("/",(r,re) =>{
     getSchedule:"/getSchedule/:interim/:route",
     getTripDetails:"/getTripDetails/:interim/:route" ,
     getInspectionCheckList: "/GetInspectionCheckList",
-    getPreInspectionRecords:"/getPreInspectionRecords"
+    getPreInspectionRecords:"/getPreInspectionRecords",
+    getPreInspectionIssues:"/preInspectionIssues",
+    getPostInspectionIssues:"/getPostInspectionIssues",
+    getWeeklyStudentsPerRoute: "/getweeklystudents/:route"
+    getMonthlyStudentsCount:"/monthlystudents"
 
   }
   re.send(list_api);
